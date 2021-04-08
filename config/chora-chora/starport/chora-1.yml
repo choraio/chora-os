@@ -1,16 +1,16 @@
 accounts:
-  - name: chora-validator
+  - name: chora-1-validator
     coins: ["500chora", "500000000stake"]
-  - name: chora-user
+  - name: chora-1-user
     coins: ["500chora"]
 validator:
-  name: chora-validator
+  name: chora-1-validator
   staked: "100000000stake"
 faucet:
-  name: chora-user
+  name: chora-1-user
   coins:
     - "5chora"
 genesis:
-  chain_id: "chora"
+  chain_id: "chora-1"
 init:
-  home: ".chora"
+  home: ".chora-1"

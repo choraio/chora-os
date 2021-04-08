@@ -1,0 +1,9 @@
+{
+	"key": "chora-validator",
+	"chain-id": "chora",
+	"rpc-addr": "http://127.0.0.1:26657",
+	"account-prefix": "cosmos",
+	"gas-adjustment": 1.5,
+	"gas-prices": "0.025stake",
+	"trusting-period": "336h"
+}

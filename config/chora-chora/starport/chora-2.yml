@@ -1,0 +1,25 @@
+accounts:
+  - name: chora-2-validator
+    coins: ["500chora", "500000000stake"]
+  - name: chora-2-user
+    coins: ["500chora"]
+validator:
+  name: chora-2-validator
+  staked: "100000000stake"
+faucet:
+  host: ":4501"
+  name: chora-2-user
+  coins:
+    - "5chora"
+host:
+  rpc: ":26659"
+  p2p: ":26658"
+  prof: ":6061"
+  grpc: ":9091"
+  api: ":1318"
+  frontend: ":8081"
+  dev-ui: ":12346"
+genesis:
+  chain_id: "chora-2"
+init:
+  home: ".chora-2"

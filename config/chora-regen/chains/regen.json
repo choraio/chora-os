@@ -1,0 +1,9 @@
+{
+	"key": "regen-validator",
+	"chain-id": "regen",
+	"rpc-addr": "http://127.0.0.1:26659",
+	"account-prefix": "regen",
+	"gas-adjustment": 1.5,
+	"gas-prices": "0.025stake",
+	"trusting-period": "336h"
+}

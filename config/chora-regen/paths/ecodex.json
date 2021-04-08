@@ -1,0 +1,23 @@
+{
+  "src": {
+    "chain-id": "chora",
+    "client-id": "",
+    "connection-id": "",
+    "channel-id": "",
+    "port-id": "ecodex",
+    "order": "unordered",
+    "version": "ecodex-1"
+  },
+  "dst": {
+    "chain-id": "regen",
+    "client-id": "",
+    "connection-id": "",
+    "channel-id": "",
+    "port-id": "ecodex",
+    "order": "unordered",
+    "version": "ecodex-1"
+  },
+  "strategy": {
+    "type": "naive"
+  }
+}
