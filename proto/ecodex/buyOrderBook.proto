@@ -1,0 +1,14 @@
+syntax = "proto3";
+package choraio.chora.ecodex;
+
+option go_package = "github.com/choraio/chora/x/ecodex/types";
+
+import "ecodex/order.proto";
+
+message BuyOrderBook {
+	string index = 2;
+	int32 orderIDTrack = 3; 
+	string amountDenom = 4; 
+	string priceDenom = 5; 
+	repeated Order orders = 6;
+}

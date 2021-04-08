@@ -86,6 +86,9 @@ import (
 	tmjson "github.com/tendermint/tendermint/libs/json"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	// this line is used by starport scaffolding # stargate/app/moduleImport
+	"github.com/choraio/chora/x/ecodex"
+	ecodexkeeper "github.com/choraio/chora/x/ecodex/keeper"
+	ecodextypes "github.com/choraio/chora/x/ecodex/types"
 )
 
 const Name = "chora"
@@ -133,6 +136,7 @@ var (
 		vesting.AppModuleBasic{},
 		chora.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
+		ecodex.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -144,6 +148,7 @@ var (
 		stakingtypes.NotBondedPoolName: {authtypes.Burner, authtypes.Staking},
 		govtypes.ModuleName:            {authtypes.Burner},
 		ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
+	    ecodextypes.ModuleName: 		{authtypes.Minter, authtypes.Burner}, // <--
 	}
 )
 
@@ -200,6 +205,8 @@ type App struct {
 
 	choraKeeper chorakeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
+	ScopedEcodexKeeper capabilitykeeper.ScopedKeeper
+	ecodexKeeper       ecodexkeeper.Keeper
 
 	// the module manager
 	mm *module.Manager
@@ -230,6 +237,7 @@ func New(
 		evidencetypes.StoreKey, ibctransfertypes.StoreKey, capabilitytypes.StoreKey,
 		choratypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
+		ecodextypes.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey)
@@ -324,6 +332,18 @@ func New(
 	)
 
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
+	scopedEcodexKeeper := app.CapabilityKeeper.ScopeToModule(ecodextypes.ModuleName)
+	app.ScopedEcodexKeeper = scopedEcodexKeeper
+	app.ecodexKeeper = *ecodexkeeper.NewKeeper(
+		appCodec,
+		keys[ecodextypes.StoreKey],
+		keys[ecodextypes.MemStoreKey],
+		app.IBCKeeper.ChannelKeeper,
+		&app.IBCKeeper.PortKeeper,
+		scopedEcodexKeeper,
+		app.BankKeeper,
+	)
+	ecodexModule := ecodex.NewAppModule(appCodec, app.ecodexKeeper)
 
 	app.GovKeeper = govkeeper.NewKeeper(
 		appCodec, keys[govtypes.StoreKey], app.GetSubspace(govtypes.ModuleName), app.AccountKeeper, app.BankKeeper,
@@ -334,6 +354,7 @@ func New(
 	ibcRouter := porttypes.NewRouter()
 	ibcRouter.AddRoute(ibctransfertypes.ModuleName, transferModule)
 	// this line is used by starport scaffolding # ibc/app/router
+	ibcRouter.AddRoute(ecodextypes.ModuleName, ecodexModule)
 	app.IBCKeeper.SetRouter(ibcRouter)
 
 	/****  Module Options ****/
@@ -367,6 +388,7 @@ func New(
 		transferModule,
 		chora.NewAppModule(appCodec, app.choraKeeper),
 		// this line is used by starport scaffolding # stargate/app/appModule
+		ecodexModule,
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -401,6 +423,7 @@ func New(
 		ibctransfertypes.ModuleName,
 		choratypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
+		ecodextypes.ModuleName,
 	)
 
 	app.mm.RegisterInvariants(&app.CrisisKeeper)
@@ -583,6 +606,7 @@ func initParamsKeeper(appCodec codec.BinaryMarshaler, legacyAmino *codec.LegacyA
 	paramsKeeper.Subspace(ibctransfertypes.ModuleName)
 	paramsKeeper.Subspace(ibchost.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
+	paramsKeeper.Subspace(ecodextypes.ModuleName)
 
 	return paramsKeeper
 }

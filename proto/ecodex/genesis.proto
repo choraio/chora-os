@@ -1,0 +1,20 @@
+syntax = "proto3";
+package choraio.chora.ecodex;
+
+// this line is used by starport scaffolding # genesis/proto/import
+import "ecodex/denomTrace.proto";
+import "ecodex/slog.proto";
+import "ecodex/buyOrderBook.proto";
+import "ecodex/sellOrderBook.proto";
+
+option go_package = "github.com/choraio/chora/x/ecodex/types";
+
+// GenesisState defines the ecodex module's genesis state.
+message GenesisState {
+    // this line is used by starport scaffolding # genesis/proto/state
+	repeated DenomTrace denomTraceList = 5; // this line is used by starport scaffolding # genesis/proto/stateField
+	repeated Slog slogList = 4; // this line is used by starport scaffolding # genesis/proto/stateField
+	repeated BuyOrderBook buyOrderBookList = 3; // this line is used by starport scaffolding # genesis/proto/stateField
+	repeated SellOrderBook sellOrderBookList = 2; // this line is used by starport scaffolding # genesis/proto/stateField
+    string port_id = 1; // this line is used by starport scaffolding # genesis/proto/stateField
+}

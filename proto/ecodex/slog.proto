@@ -1,0 +1,12 @@
+syntax = "proto3";
+package choraio.chora.ecodex;
+
+option go_package = "github.com/choraio/chora/x/ecodex/types";
+
+import "gogoproto/gogo.proto";
+
+message Slog {
+	string creator = 1;
+	string id = 2;
+	string log = 3; 
+}

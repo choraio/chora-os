@@ -1,0 +1,13 @@
+syntax = "proto3";
+package choraio.chora.ecodex;
+
+option go_package = "github.com/choraio/chora/x/ecodex/types";
+
+import "gogoproto/gogo.proto";
+
+message DenomTrace {
+	string index = 2;
+	string port = 3; 
+	string channel = 4; 
+	string origin = 5; 
+}
