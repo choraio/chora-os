@@ -5,6 +5,8 @@ import (
 )
 
 const (
+	// WARNING: starport relayer does not support custom prefix
+	// see https://github.com/tendermint/starport/issues/949
 	AccountAddressPrefix = "cosmos"
 )
 
