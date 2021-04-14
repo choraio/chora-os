@@ -89,6 +89,12 @@ import (
 	"github.com/choraio/chora/x/ecodex"
 	ecodexkeeper "github.com/choraio/chora/x/ecodex/keeper"
 	ecodextypes "github.com/choraio/chora/x/ecodex/types"
+
+	// regen-ledger custom modules and supporting modules
+	ecodata "github.com/regen-network/regen-ledger/x/data/module"
+	ecocredit "github.com/regen-network/regen-ledger/x/ecocredit/module"
+	moduletypes "github.com/regen-network/regen-ledger/types/module"
+	servermodule "github.com/regen-network/regen-ledger/types/module/server"
 )
 
 const Name = "chora"
@@ -137,6 +143,10 @@ var (
 		chora.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 		ecodex.AppModuleBasic{},
+
+		// regen-ledger cusom modules
+		ecodata.Module{},
+		ecocredit.Module{},
 	)
 
 	// module account permissions
@@ -344,6 +354,27 @@ func New(
 		app.BankKeeper,
 	)
 	ecodexModule := ecodex.NewAppModule(appCodec, app.ecodexKeeper)
+
+	/* BEGIN regen-ledger experimental module wiring */
+
+	newModuleManager := servermodule.NewManager(app.BaseApp, codec.NewProtoCodec(interfaceRegistry))
+
+	// TODO: fix the following hack once x/auth supports ADR 033 or there is a suitable alternative
+	newModules := []moduletypes.Module{
+		ecodata.Module{},
+		ecocredit.Module{},
+	}
+	err := newModuleManager.RegisterModules(newModules)
+	if err != nil {
+		panic(err)
+	}
+
+	err = newModuleManager.CompleteInitialization()
+	if err != nil {
+		panic(err)
+	}
+
+	/* END regen-ledger experimental module wiring */
 
 	app.GovKeeper = govkeeper.NewKeeper(
 		appCodec, keys[govtypes.StoreKey], app.GetSubspace(govtypes.ModuleName), app.AccountKeeper, app.BankKeeper,
